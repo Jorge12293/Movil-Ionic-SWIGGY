@@ -1,0 +1,18 @@
+<ion-item>
+  <ion-thumbnail slot="start">
+    <img [src]="item?.cover ? item?.cover : ''" />
+  </ion-thumbnail>
+  <ion-label>
+    <h4>{{item.name}}</h4>
+    <p class="ion-text-wrap">{{item.desc}}</p>
+    <ion-text><p>{{item.price | number:'0.2-2'}}</p></ion-text>
+  </ion-label>
+  <ion-row *ngIf="!item.quantity || item.quantity <= 0">
+    <ion-text class="add" color="success" (click)="quantityPlus()">Add</ion-text>
+  </ion-row>
+  <ion-row *ngIf="item.quantity>0">
+    <ion-icon color="success" name="remove-outline" (click)="quantityMinus()"></ion-icon>
+    <ion-text class="ion-text-center quantity" color="success">{{item.quantity}}</ion-text>
+    <ion-icon color="success" name="add-outline" (click)="quantityPlus()"></ion-icon>
+  </ion-row>
+</ion-item>

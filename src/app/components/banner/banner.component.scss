@@ -1,0 +1,26 @@
+
+
+.swiper-images-container {
+  transform: translateY(10%);
+  height: 28vh;
+  width: 94%;
+  margin: auto;
+
+  swiper-container {
+    --swiper-pagination-color: var(--ion-color-primary);
+    swiper-slide {
+      height: 24vh;
+      img {
+        width: 100%;
+        height: 20vh;
+        border-radius: 5px;
+        box-shadow: -1px 11px 13px -6px rgb(87, 86, 86);
+      }
+    }
+  }
+}
+
+:host ::ng-deep .swiper-slide-shadow-left,
+:host ::ng-deep .swiper-slide-shadow-right {
+  background-image: none !important;
+}

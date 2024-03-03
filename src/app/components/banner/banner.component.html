@@ -1,0 +1,10 @@
+<ion-row class="border-bottom" *ngIf="bannerImages.length>0">
+  <div class="swiper-images-container">
+    <swiper-container effect="coverflow" [slideShadows]=[false] [modules]="swiperModules" [slidesPerView]="1.2"
+      [spaceBetween]="20" [loop]="true" [keyboard]="true" [pagination]="{clickable:true,dynamicBullets:true}">
+      <swiper-slide *ngFor="let image of bannerImages">
+        <img [src]="image.banner">
+      </swiper-slide>
+    </swiper-container>
+  </div>
+</ion-row>

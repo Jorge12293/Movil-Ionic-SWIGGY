@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NavController } from '@ionic/angular';
+import { SearchLocationComponent } from 'src/app/components/search-location/search-location.component';
 import { AddressService } from 'src/app/services/address/address.service';
 import { GlobalService } from 'src/app/services/global/global.service';
 
@@ -124,6 +125,20 @@ export class EditAddressPage implements OnInit {
     } catch (error) {
       console.log(error);
       this.global.errorToast();
+    }
+  }
+
+  async searchLocation(){
+    try {
+      const options = {
+        component: SearchLocationComponent,
+        cssClass:'address-modal',
+        swipeToClose: true
+      }
+      const location = await this.global.createModal(options);
+      console.log(location);
+    } catch (error) {
+      console.log(error);
     }
   }
 

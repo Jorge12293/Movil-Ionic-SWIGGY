@@ -10,8 +10,9 @@ import { RestaurantDetailComponent } from './restaurant-detail/restaurant-detail
 import { CartItemComponent } from './cart-item/cart-item.component';
 import { OrdersComponent } from './orders/orders.component';
 import { MapComponent } from './map/map.component';
+import { SearchLocationComponent } from './search-location/search-location.component';
 
-const listRestaurants = [
+const listComponents = [
   LoadingRestaurantComponent,
   BannerComponent,
   RestaurantComponent,
@@ -20,12 +21,13 @@ const listRestaurants = [
   RestaurantDetailComponent,
   CartItemComponent,
   OrdersComponent,
-  MapComponent
+  MapComponent,
+  SearchLocationComponent
 ];
 
 @NgModule({
-  declarations: [...listRestaurants],
-  exports:[...listRestaurants],
+  declarations: [...listComponents],
+  exports:[...listComponents],
   imports: [
     IonicModule,
     CommonModule,

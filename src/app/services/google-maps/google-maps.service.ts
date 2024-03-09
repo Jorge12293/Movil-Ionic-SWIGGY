@@ -10,9 +10,14 @@ export class GoogleMapsService {
 
   _googleMaps:any;
   private _places = new BehaviorSubject<any[]>([]);
+  private _markerChange = new BehaviorSubject<any>({});
 
   get places(){
     return this._places.asObservable();
+  }
+
+  get markerChange(){
+    return this._markerChange.asObservable();
   }
 
   constructor(
@@ -70,7 +75,7 @@ export class GoogleMapsService {
       service.getPlacePredictions({
         input: query,
         componentRestrictions: {
-          country: 'IN'
+          country: 'IN' // Replace IN with your country code that's it
         }
       },(predictions:any,status:any)=>{
         let autoCompleteItems:any[] = [];
@@ -110,6 +115,10 @@ export class GoogleMapsService {
         resolve(latLng);
       })
     })
+  }
+
+  changeMarkerInMap(location:any){
+    this._markerChange.next(location);
   }
 
 }

@@ -16,6 +16,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() update: boolean = false;
 
   mapListener!:Subscription;
+  mapChange!:Subscription;
 
   googleMaps: any;
   map: any;
@@ -30,11 +31,29 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
   ngOnInit() { }
 
   ngAfterViewInit(): void {
-    this.initMap();
+    this.initAfterViewInit();
+  }
+
+  async initAfterViewInit(){
+    await this.initMap();
+    await this.updateMarkerInMap();
+  }
+
+  async updateMarkerInMap(){
+    this.mapChange = this.maps.markerChange.subscribe(async(loc:any)=>{
+      if(loc?.lat){
+        const googleMaps = this.googleMaps;
+        const location = new googleMaps.LatLng(loc.lat,loc.lng);
+        this.map.panTo(location);
+        this.marker.setMap(null);
+        await this.addMarker(location);
+      }
+    });
   }
 
   ngOnDestroy(): void {
     if(this.mapListener) this.googleMaps.event.removeListener(this.mapListener);
+    if(this.mapChange) this.mapChange.unsubscribe();
   }
 
   async initMap() {

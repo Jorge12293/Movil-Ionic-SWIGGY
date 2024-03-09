@@ -7,6 +7,7 @@ import { Geolocation, PositionOptions } from '@capacitor/geolocation';
 })
 export class LocationService {
 
+
   constructor() { }
 
   async getCurrentLocation(){
@@ -21,6 +22,7 @@ export class LocationService {
 
     return await Geolocation.getCurrentPosition(options);
   }
+
 
 
 }

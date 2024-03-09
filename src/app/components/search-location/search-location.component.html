@@ -17,18 +17,18 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-item>
+  <ion-item (click)="getCurrentPosition()">
     <ion-icon slot="start" name="locate-outline"></ion-icon>
     <ion-label>
       Current location
       <p>Using GPS</p>
     </ion-label>
   </ion-item>
-  <ion-list>
+  <ion-list *ngIf="places.length>0">
     <ion-list-header>
       <h5>SEARCH RESULTS</h5>
     </ion-list-header>
-    <ion-item *ngFor="let place of places">
+    <ion-item *ngFor="let place of places" (click)="choosePlace(place)">
       <ion-icon slot="start" name="location-outline"></ion-icon>
       <ion-label>
         {{place?.location_name}}

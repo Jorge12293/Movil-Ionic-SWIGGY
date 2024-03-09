@@ -5,6 +5,7 @@ import { NavController } from '@ionic/angular';
 import { SearchLocationComponent } from 'src/app/components/search-location/search-location.component';
 import { AddressService } from 'src/app/services/address/address.service';
 import { GlobalService } from 'src/app/services/global/global.service';
+import { GoogleMapsService } from 'src/app/services/google-maps/google-maps.service';
 
 @Component({
   selector: 'app-edit-address',
@@ -27,7 +28,8 @@ export class EditAddressPage implements OnInit {
     private addressService: AddressService,
     private global: GlobalService,
     private navCtrl: NavController,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private map: GoogleMapsService,
   ) { }
 
   ngOnInit() {
@@ -136,7 +138,16 @@ export class EditAddressPage implements OnInit {
         swipeToClose: true
       }
       const location = await this.global.createModal(options);
-      console.log(location);
+      if(location){
+        this.location = location;
+        const loc = {
+          lat: location.lat,
+          lng: location.lng
+        }
+        // Update Marker
+        this.update = true;
+        this.map.changeMarkerInMap(loc);
+      }
     } catch (error) {
       console.log(error);
     }

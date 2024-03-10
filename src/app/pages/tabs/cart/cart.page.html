@@ -72,11 +72,11 @@
       </ion-button>
       <ion-icon slot="start" name="home-outline"></ion-icon>
       <ion-label>
-        <h5>Deliver toHome</h5>
-        <ion-text color="medium">Karol 8agh, New Delhi</ion-text>
+        <h5>Deliver {{location.title}}</h5>
+        <ion-text color="medium">{{location.address}}</ion-text>
       </ion-label>
     </ion-item>
-    <ion-row>
+    <ion-row *ngIf="location?.lat && location?.id && location?.id != ''">
       <ion-col size="6" class="ion-no-padding" (click)="scrollToBottom()">
         <ion-item lines="none" color="light" class="ion-no-padding">
           <ion-label>

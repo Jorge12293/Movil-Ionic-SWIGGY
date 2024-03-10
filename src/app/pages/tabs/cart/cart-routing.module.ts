@@ -7,6 +7,10 @@ const routes: Routes = [
   {
     path: '',
     component: CartPage
+  },
+  {
+    path: 'address',
+    loadChildren:()=> import('../../../pages/tabs/address/address.module').then(m => m.AddressPageModule)
   }
 ];
 

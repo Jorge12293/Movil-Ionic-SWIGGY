@@ -10,6 +10,8 @@ import { Subscription } from 'rxjs';
 import { Address } from 'src/app/models/address.model';
 import { Cart } from 'src/app/models/cart.model';
 import { Order } from 'src/app/models/order.model';
+import { AddressService } from 'src/app/services/address/address.service';
+import { SearchLocationComponent } from 'src/app/components/search-location/search-location.component';
 
 @Component({
   selector: 'app-cart',
@@ -26,17 +28,22 @@ export class CartPage implements OnInit, OnDestroy {
   instruction: any;
   location = {} as Address;
   cartSub!: Subscription;
+  addressSub!: Subscription;
 
   constructor(
     private router: Router,
     private orderService: OrderService,
     private navCtrl: NavController,
     private global: GlobalService,
-    private cartService: CartService
+    private cartService: CartService,
+    private addressService: AddressService
   ) { }
 
 
   ngOnInit() {
+    this.addressSub = this.addressService.addressChange.subscribe(address=>{
+        if(address) this.location = address;
+    });
     this.cartSub = this.cartService.cart.subscribe((cart: Cart|null) => {
       if(cart) this.model = cart;
       if (!this.model) this.location = {} as Address;
@@ -46,6 +53,7 @@ export class CartPage implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     if (this.cartSub) this.cartSub.unsubscribe();
+    if (this.addressSub) this.addressSub.unsubscribe();
   }
 
   getCart() {
@@ -54,16 +62,6 @@ export class CartPage implements OnInit, OnDestroy {
 
   async getModel() {
     this.checkUrl();
-    this.location = new Address(
-      'adddress1',
-      "user1",
-      "Address 1",
-      'Karol Bagh, New Delhi',
-      "",
-      "",
-      28.645518880730844,
-      77.19052782917346,
-    );
     await this.cartService.getCartData();
   }
 
@@ -99,12 +97,35 @@ export class CartPage implements OnInit, OnDestroy {
   }
 
   addAddress() {
-    throw new Error('Method not implemented.');
+    let url: string[] = [];
+    if(this.urlCheck === 'tabs'){
+      url = ['/','tabs','address','edit-address'];
+    }else{
+      url = [this.router.url,'address','edit-address'];
+    }
+    this.router.navigate(url);
   }
 
-  changeAddress() {
-    throw new Error('Method not implemented.');
+  async changeAddress() {
+    try {
+      const options = {
+        component: SearchLocationComponent,
+        swipeToClose:true,
+        cssClass:'custom-modal',
+        componentProps:{
+          from: 'cart'
+        }
+      }
+      const address = await this.global.createModal(options);
+      if(address){
+        if(address==='add') this.addAddress();
+        await this.addressService.changeAddress(address);
+      }
+    } catch (error) {
+      console.log(error)
+    }
   }
+
 
   makePayment() {
     try {

@@ -53,10 +53,8 @@ export class EditAddressPage implements OnInit {
         this.location.address = address.address;
         this.location.location_name = address.title;
         this.id = address.id;
-        setTimeout(async ()=>{
-          this.initForm(address);
-          this.toggleFetched()
-        },1000)
+        await this.initForm(address);
+        this.toggleFetched()
       }else {
         this.update= false;
         this.initForm()

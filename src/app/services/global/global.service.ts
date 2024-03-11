@@ -77,7 +77,6 @@ export class GlobalService {
     const modal = await this.modalCtrl.create(options);
     await modal.present();
     const { data } = await modal.onWillDismiss();
-    console.log(data);
     if(data) return data;
   }
 

@@ -87,7 +87,7 @@ export class GoogleMapsService {
               console.log(prediction)
               let latLng : any = await this.geoCode(prediction.description,googleMaps);
               const places = {
-                location_name : prediction.structured_formatting.main_text,
+                title : prediction.structured_formatting.main_text,
                 address : prediction.description,
                 lat:latLng.lat,
                 lng:latLng.lng,

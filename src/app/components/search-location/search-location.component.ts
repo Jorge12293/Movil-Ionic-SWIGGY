@@ -72,11 +72,22 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
 
 
   dismiss(val?: any) {
-    this.global.modalDismiss(val);
+    try{
+      this.global.modalDismiss(val);
+    }catch(error){
+      console.log(error)
+    }
   }
 
   choosePlace(place: any) {
-    console.log(place);
+    this.global.showLoader();
+    if(this.from){
+      const savedPlace =  this.savedPlaces.find(x=>x.lat === place.lat && x.lng === place.lng );
+      if(savedPlace){
+        place = savedPlace
+      }
+    }
+    this.global.hideLoader();
     this.dismiss(place);
   }
 
@@ -89,7 +100,7 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
       const results = await this.maps.getAddress(latitude, longitude);
       console.log(results);
       const place = {
-        location_name: results.address_components[0].short_name,
+        title: results.address_components[0].short_name,
         address: results.formatted_address,
         lat: latitude,
         lng: longitude

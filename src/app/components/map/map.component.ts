@@ -60,6 +60,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     try {
       if(!this.update){
         const position = await this.locationService.getCurrentLocation();
+        console.log(position)
         this.center = {
           lat: position?.coords.latitude ?? 0,
           lng: position?.coords.longitude ?? 0,
@@ -133,7 +134,7 @@ export class MapComponent implements OnInit, AfterViewInit, OnDestroy {
     try {
       const result: any = await this.maps.getAddress(lat, lng)
       const loc = {
-        location_name: result.address_components[0].short_name,
+        title: result.address_components[0].short_name,
         address: result.formatted_address,
         lat,
         lng

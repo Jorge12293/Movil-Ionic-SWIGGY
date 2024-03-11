@@ -67,7 +67,7 @@ export class AddressService {
     param.id = id;
     let currentAddresses = this._addresses.value;
     const index = currentAddresses.findIndex(x => x.id == id);
-    currentAddresses[index] = new Address(
+    const data =  new Address(
       id,
       param.user_id,
       param.title,
@@ -77,7 +77,9 @@ export class AddressService {
       param.lat,
       param.lng
     );
+    currentAddresses[index] = data;
     this._addresses.next(currentAddresses);
+    this._addressChange.next(data);
   }
 
   deleteAddress(param: any) {

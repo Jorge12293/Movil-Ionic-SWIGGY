@@ -107,6 +107,13 @@
   --border-radius:5px;
 }
 
+.home-modal::part(content){
+  --height: 78%;
+  position:absolute;
+  bottom: 0px;
+  --border-radius:5px;
+}
+
 
 @media (prefers-color-scheme: dark) {
   /*

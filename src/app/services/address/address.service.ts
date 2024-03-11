@@ -23,9 +23,20 @@ export class AddressService {
     return this._addressChange.asObservable();
   }
 
-  getAddresses() {
+  getAddresses(limit?:number) {
     try {
       let allAddress: Address[] = this.api.addresses;
+      if(limit){
+        let address : Address[] = [];
+        let length = limit;
+        if(allAddress.length < limit){
+          length = allAddress.length;
+        }
+        for(let i = 0; i < length; i++){
+          address.push(allAddress[i]);
+        }
+        allAddress = address;
+      }
       this._addresses.next(allAddress);
     } catch (error) {
       console.log(error);

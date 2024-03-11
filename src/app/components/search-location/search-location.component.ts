@@ -43,7 +43,11 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
       this.savedPlaces = address;
       console.log(this.savedPlaces)
     });
-    await this.addressService.getAddresses();
+    if(this.from == 'home'){
+      await this.addressService.getAddresses(1);
+    }else{
+      await this.addressService.getAddresses();
+    }
     this.global.hideLoader();
   }
 
@@ -80,6 +84,7 @@ export class SearchLocationComponent implements OnInit, OnDestroy {
     try {
       this.global.showLoader();
       const position: any = await this.locationService.getCurrentLocation();
+      console.log(position)
       const { latitude, longitude } = position?.coords;
       const results = await this.maps.getAddress(latitude, longitude);
       console.log(results);

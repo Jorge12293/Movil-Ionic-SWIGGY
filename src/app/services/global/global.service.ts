@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { AlertButton, AlertController, IonicSafeString, LoadingController, ModalController, ToastController } from '@ionic/angular';
+import { AlertButton, AlertController, IonicSafeString, LoadingController, ModalController, ModalOptions, ToastController } from '@ionic/angular';
 
 @Injectable({
   providedIn: 'root'
@@ -73,7 +73,7 @@ export class GlobalService {
     .catch((e:any) => console.log('error hide loader: ', e));
   }
 
-  async createModal(options:any) {
+  async createModal(options:ModalOptions) {
     const modal = await this.modalCtrl.create(options);
     await modal.present();
     const { data } = await modal.onWillDismiss();

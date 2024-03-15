@@ -11,6 +11,8 @@ import { CartItemComponent } from './cart-item/cart-item.component';
 import { OrdersComponent } from './orders/orders.component';
 import { MapComponent } from './map/map.component';
 import { SearchLocationComponent } from './search-location/search-location.component';
+import { EditProfileComponent } from './edit-profile/edit-profile.component';
+import { FormsModule } from '@angular/forms';
 
 const listComponents = [
   LoadingRestaurantComponent,
@@ -22,7 +24,8 @@ const listComponents = [
   CartItemComponent,
   OrdersComponent,
   MapComponent,
-  SearchLocationComponent
+  SearchLocationComponent,
+  EditProfileComponent
 ];
 
 @NgModule({
@@ -31,6 +34,8 @@ const listComponents = [
   imports: [
     IonicModule,
     CommonModule,
+    FormsModule,
+
   ],
   schemas:[CUSTOM_ELEMENTS_SCHEMA],
 })

@@ -17,6 +17,6 @@ import { ComponentsModule } from 'src/app/components/components.module';
     AccountPageRoutingModule,
     ComponentsModule
   ],
-  declarations: [AccountPage]
+  declarations: [AccountPage],
 })
 export class AccountPageModule {}

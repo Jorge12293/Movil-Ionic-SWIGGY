@@ -3,6 +3,10 @@ import { OrderService } from '../../../services/order/order.service';
 import { Subscription } from 'rxjs';
 import { CartService } from 'src/app/services/cart/cart.service';
 import { Order } from 'src/app/models/order.model';
+import { GlobalService } from '../../../services/global/global.service';
+import { ModalOptions } from '@ionic/angular';
+import { EditProfileComponent } from 'src/app/components/edit-profile/edit-profile.component';
+import { ProfileService } from 'src/app/services/profile/profile.service';
 
 @Component({
   selector: 'app-account',
@@ -16,27 +20,23 @@ export class AccountPage implements OnInit,OnDestroy {
   profile :any= { };
   orders:any[] = [];
   orderSub!: Subscription;
+  profileSub!: Subscription;
 
   constructor(
-    private orderService:OrderService,
-    private cartService:CartService
+    private orderService: OrderService,
+    private cartService: CartService,
+    private globalService: GlobalService,
+    private profileService: ProfileService
   ) { }
 
   ngOnInit() {
     this.orderSub = this.orderService.orders.subscribe((order:Order[])=>{
       this.orders = order;
-      // if(order instanceof Array){
-      //   this.orders = order;
-      // }else {
-      //   if(order?.delete) {
-      //     this.orders = this.orders.filter(x => x.id != order.id);
-      //   } else if(order?.update) {
-      //     const index = this.orders.findIndex(x => x.id == order.id);
-      //     this.orders[index] = order;
-      //   } else {
-      //     this.orders = this.orders.concat(order);
-      //   }
-      // }
+    },e=>{
+      console.log(e);
+    })
+    this.profileSub = this.profileService.profile.subscribe(profile=>{
+      this.profile = profile;
     },e=>{
       console.log(e);
     })
@@ -45,6 +45,7 @@ export class AccountPage implements OnInit,OnDestroy {
 
   ngOnDestroy(): void {
     if(this.orderSub) this.orderSub.unsubscribe;
+    if(this.profileSub) this.profileSub.unsubscribe;
   }
 
   getData() {
@@ -72,5 +73,15 @@ export class AccountPage implements OnInit,OnDestroy {
     } else {
       this.cartService.orderToCart(order);
     }
+  }
+  async editProfile(){
+     const options : ModalOptions= {
+        component:EditProfileComponent,
+        componentProps:{
+          profile:this.profile
+        },
+        cssClass: 'custom-modal',
+     }
+     const modal = await this.globalService.createModal(options)
   }
 }

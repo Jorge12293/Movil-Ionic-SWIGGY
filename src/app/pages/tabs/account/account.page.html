@@ -16,7 +16,7 @@
   <ng-container *ngIf="!isLoading">
     <ion-list class="border-bottom">
       <ion-item lines="full">
-        <ion-button slot="end" fill="clear">EDIT</ion-button>
+        <ion-button slot="end" fill="clear" (click)="editProfile()">EDIT</ion-button>
         <ion-label>
           <ion-text class="ion-text-uppercase"><h4>{{profile.name}}</h4></ion-text>
           <p>{{profile.phone}} | {{profile.email}}</p>

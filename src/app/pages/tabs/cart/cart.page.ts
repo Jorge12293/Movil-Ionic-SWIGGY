@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationExtras, Router } from '@angular/router';
 import { Preferences } from '@capacitor/preferences';
 import { IonContent, NavController } from '@ionic/angular';
 import * as moment from 'moment';
@@ -9,7 +9,6 @@ import { CartService } from 'src/app/services/cart/cart.service';
 import { Subscription } from 'rxjs';
 import { Address } from 'src/app/models/address.model';
 import { Cart } from 'src/app/models/cart.model';
-import { Order } from 'src/app/models/order.model';
 import { AddressService } from 'src/app/services/address/address.service';
 import { SearchLocationComponent } from 'src/app/components/search-location/search-location.component';
 
@@ -39,16 +38,37 @@ export class CartPage implements OnInit, OnDestroy {
     private addressService: AddressService
   ) { }
 
+  async ngOnInit() {
+    this.loadInitial();
+  }
 
-  ngOnInit() {
-    this.addressSub = this.addressService.addressChange.subscribe(address=>{
-        if(address) this.location = address;
+  async loadInitial() {
+    await this.getData();
+    this.addressSub = this.addressService.addressChange.subscribe(async (address) => {
+      this.location = address ?? {} as Address;
+      if (this.location?.id && this.location?.id != '') {
+        const radius = this.addressService.radius;
+        const result = await this.cartService.checkCart(this.location, radius);
+        if (result) {
+          this.global.errorToast(
+            'Your location is too far from the restaurant in the cart, kindly search from some other restaurant nearby.', 5000);
+          await this.cartService.clearCart();
+        }
+      }
+      if (this.location.lat) {
+        if (this.model.restaurant) {
+          const radius = this.addressService.radius;
+          await this.cartService.checkCart(this.location, radius);
+        }
+      }
     });
-    this.cartSub = this.cartService.cart.subscribe((cart: Cart|null) => {
-      if(cart) this.model = cart;
-      if (!this.model) this.location = {} as Address;
+    this.cartSub = this.cartService.cart.subscribe((cart: Cart | null) => {
+      if (cart) this.model = cart;
+      if (!this.model) {
+        this.location = {} as Address;
+      }
+      console.log('Cart Page Model: ', this.model)
     });
-    this.getModel();
   }
 
   ngOnDestroy(): void {
@@ -60,7 +80,7 @@ export class CartPage implements OnInit, OnDestroy {
     return Preferences.get({ key: 'cart' });
   }
 
-  async getModel() {
+  async getData() {
     this.checkUrl();
     await this.cartService.getCartData();
   }
@@ -96,29 +116,39 @@ export class CartPage implements OnInit, OnDestroy {
     }
   }
 
-  addAddress() {
+  addAddress(location?: any) {
     let url: string[] = [];
-    if(this.urlCheck === 'tabs'){
-      url = ['/','tabs','address','edit-address'];
-    }else{
-      url = [this.router.url,'address','edit-address'];
+    let navData: NavigationExtras = {};
+    if (location) {
+      location.from = 'cart';
+      navData = {
+        queryParams: {
+          data: JSON.stringify(location)
+        }
+      }
     }
-    this.router.navigate(url);
+
+    if (this.urlCheck === 'tabs') {
+      url = ['/', 'tabs', 'address', 'edit-address'];
+    } else {
+      url = [this.router.url, 'address', 'edit-address'];
+    }
+    this.router.navigate(url, navData);
   }
 
   async changeAddress() {
     try {
       const options = {
         component: SearchLocationComponent,
-        swipeToClose:true,
-        cssClass:'custom-modal',
-        componentProps:{
+        swipeToClose: true,
+        cssClass: 'custom-modal',
+        componentProps: {
           from: 'cart'
         }
       }
       const address = await this.global.createModal(options);
-      if(address){
-        if(address==='add') this.addAddress();
+      if (address) {
+        if (address === 'add') this.addAddress();
         await this.addressService.changeAddress(address);
       }
     } catch (error) {
@@ -129,11 +159,11 @@ export class CartPage implements OnInit, OnDestroy {
 
   makePayment() {
     try {
-      const data= {
+      const data = {
         restaurant_id: this.model.restaurant.uid,
         instruction: this.instruction ? this.instruction : '',
         res: this.model.restaurant,
-        order:this.model.items,
+        order: this.model.items,
         time: moment().format('lll'),
         address: this.location,
         total: this.model.totalPrice,

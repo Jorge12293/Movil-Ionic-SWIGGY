@@ -1,5 +1,5 @@
 export class Restaurant {
-    
+
     constructor(
         public uid: string,
         public cover: string,
@@ -18,7 +18,7 @@ export class Restaurant {
         public city?: string,
         public address?: string,
         public distance?: number,
-        public latitude?: number, 
+        public latitude?: number,
         public longitude?: number,
         public status?: string,
         public totalRating?: number

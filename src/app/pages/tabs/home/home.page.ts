@@ -8,6 +8,7 @@ import { Restaurant } from 'src/app/models/restaurant.model';
 import { AddressService } from 'src/app/services/address/address.service';
 import { ApiService } from 'src/app/services/api/api.service';
 import { GlobalService } from 'src/app/services/global/global.service';
+import { GoogleMapsService } from 'src/app/services/google-maps/google-maps.service';
 import { LocationService } from 'src/app/services/location/location.service';
 
 @Component({
@@ -15,35 +16,37 @@ import { LocationService } from 'src/app/services/location/location.service';
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
-export class HomePage implements OnInit,OnDestroy {
-  banners:any[]=[];
-  restaurants:Restaurant[]=[];
-  isLoading:boolean=false;
+export class HomePage implements OnInit, OnDestroy {
+  banners: any[] = [];
+  restaurants: Restaurant[] = [];
+  isLoading: boolean = false;
   location = {} as Address;
-  addressSub!:Subscription;
+  addressSub!: Subscription;
 
   constructor(
-    private api:ApiService,
-    private addressService:AddressService,
-    private global : GlobalService,
+    private api: ApiService,
+    private addressService: AddressService,
+    private global: GlobalService,
     private locationService: LocationService,
-    private router:Router
+    private router: Router,
+    private mapService: GoogleMapsService
   ) { }
 
 
   ngOnInit() {
-    this.addressSub = this.addressService.addressChange.subscribe(address=>{
-      if(address && address.lat){
-        if(!this.isLoading) this.isLoading = true;
+    this.addressSub = this.addressService.addressChange.subscribe(address => {
+      console.log(address)
+      if (address && address.lat) {
+        if (!this.isLoading) this.isLoading = true;
         this.location = address;
-        this.nearByApiCall(address.lat,address.lng);
-      }else {
-        if(!address && (!this.location || !this.location.lat) ){
-          this.searchLocation('home','home-modal')
+        this.nearByApiCall();
+      } else {
+        if (!address && (!this.location || !this.location.lat)) {
+          this.searchLocation('home', 'home-modal')
         }
 
       }
-    },e=>{
+    }, e => {
       console.log(e);
       this.isLoading = false;
       this.global.errorToast();
@@ -52,20 +55,20 @@ export class HomePage implements OnInit,OnDestroy {
     this.isLoading = true;
     this.getBanners();
     console.log(this.location.lat)
-    if(!this.location.lat){
+    if (!this.location.lat) {
       this.getNearByRestaurants();
     }
   }
 
   ngOnDestroy(): void {
-    if(this.addressSub) this.addressSub.unsubscribe();
+    if (this.addressSub) this.addressSub.unsubscribe();
   }
 
-  getBanners(){
+  getBanners() {
     this.banners = this.api.banners;
   }
 
-  nearByApiCall(lat: number, lng: number) {
+  nearByApiCall() {
     this.isLoading = false;
     this.restaurants = this.api.restaurants;
   }
@@ -73,52 +76,62 @@ export class HomePage implements OnInit,OnDestroy {
   async getNearByRestaurants() {
     try {
       const position = await this.locationService.getCurrentLocation();
-      if(position){
+      if (position) {
         const { latitude, longitude } = position.coords;
-        await this.getData(latitude,longitude);
-        console.log('Restaurants: ',this.restaurants);
+        const address: any = await this.mapService.getAddress(latitude, longitude);
+        if (address) {
+          this.location = new Address( "", "", address.address_components[0].short_name,
+            address.formatted_address, "", "", latitude, longitude );
+          console.log(' getNearByRestaurants()=>', this.location)
+          await this.getData();
+        }
+        console.log('Restaurants: ', this.restaurants);
         this.isLoading = false;
-      }else{
+      } else {
         console.log('Error Get Position...');
         this.isLoading = false;
-        this.searchLocation('home','home-modal');
+        this.searchLocation('home', 'home-modal');
       }
     } catch (error) {
       console.log(error);
       this.isLoading = false;
-      this.searchLocation('home','home-modal');
+      this.searchLocation('home', 'home-modal');
     }
   }
 
-  async getData(lat:number,lng:number){
+  getData() {
     try {
       this.restaurants = [];
-      await this.nearByApiCall(lat,lng);
+      const address = this.addressService.checkExistAddress(this.location);
+      console.log('Address Change =>', address)
+      // if(!address){
+      //   this.nearByApiCall(lat,lng);
+      // }
     } catch (error) {
       console.log(error);
       this.global.errorToast();
     }
   }
 
-  async searchLocation(prop:string,className?:string){
+  async searchLocation(prop: string, className?: string) {
     try {
-      const options :ModalOptions = {
-        component:SearchLocationComponent,
+      const options: ModalOptions = {
+        component: SearchLocationComponent,
         cssClass: className ?? '',
         backdropDismiss: prop === 'select-place',
         componentProps: {
-          from : prop
+          from: prop
         }
       }
       const modal = await this.global.createModal(options);
-      if(modal){
-        if(modal == 'add'){
+      if (modal) {
+        if (modal == 'add') {
           this.addAddress(this.location);
-        } else if(modal == 'select'){
+        } else if (modal == 'select') {
           this.searchLocation('select-place')
-        } else{
+        } else {
           this.location = modal;
-          await this.getData(this.location.lat,this.location.lng);
+          await this.getData();
         }
       }
     } catch (error) {
@@ -126,20 +139,20 @@ export class HomePage implements OnInit,OnDestroy {
     }
   }
 
-  addAddress(val?:any){
+  addAddress(val?: any) {
     let navData: NavigationExtras;
-    if(val){
+    if (val) {
       val.from = 'home'; // Updated Route
-    }{
+    } else {
       val = { // Initialize Route
-        from : 'home'
+        from: 'home'
       }
     }
     navData = {
-      queryParams:{
+      queryParams: {
         data: JSON.stringify(val)
       }
     }
-    this.router.navigate(['/','tabs','address','edit-address'],navData)
+    this.router.navigate(['/', 'tabs', 'address', 'edit-address'], navData)
   }
 }

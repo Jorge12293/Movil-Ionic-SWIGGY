@@ -8,6 +8,8 @@ import { Address } from 'src/app/models/address.model';
 })
 export class AddressService {
 
+  radius = 7; // In km
+
   private _addresses = new BehaviorSubject<Address[]>([]);
   private _addressChange = new BehaviorSubject<Address | null>(null);
 
@@ -90,6 +92,16 @@ export class AddressService {
 
   changeAddress(address:Address){
     this._addressChange.next(address);
+  }
+
+  checkExistAddress(location:Address) : Address | null {
+    let loc : Address = location;
+    const address = this.api.addresses.find(x=>x.lat === location.lat && x.lng === location.lng);
+    if(address){
+      loc = address;
+    }
+    this.changeAddress(loc);
+    return address ?? null;
   }
 
 }

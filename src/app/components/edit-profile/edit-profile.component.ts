@@ -1,7 +1,8 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ProfileService } from '../../services/profile/profile.service';
 import { GlobalService } from 'src/app/services/global/global.service';
+import { IonInput } from '@ionic/angular';
 
 @Component({
   selector: 'app-edit-profile',
@@ -11,13 +12,21 @@ import { GlobalService } from 'src/app/services/global/global.service';
 export class EditProfileComponent implements OnInit {
 
   @Input() profile: any = {};
+  @ViewChild('phoneInput', { static: false }) phoneInput!: IonInput;
   isSubmitted: boolean = false;
+
   constructor(
     private profileService: ProfileService,
     private global: GlobalService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    setTimeout(()=>{
+      if (this.phoneInput) {
+        this.phoneInput.setFocus();
+      }
+    },500);
+  }
 
   async onSubmit(form: NgForm) {
     try {

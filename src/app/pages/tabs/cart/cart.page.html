@@ -66,16 +66,31 @@
         </ion-button>
       </ion-col>
     </ion-row>
-    <ion-item lines="none" *ngIf="location?.lat">
-      <ion-button slot="end" size="small" fill="clear" (click)="changeAddress()">
-        CHANGE
-      </ion-button>
+
+    <ion-item lines="none" *ngIf="location?.lat && location?.id && location?.id != ''">
+      <ion-button slot="end" size="small" fill="clear" (click)="changeAddress()"> CHANGE </ion-button>
       <ion-icon slot="start" name="home-outline"></ion-icon>
       <ion-label>
-        <h5>Deliver {{location.title}}</h5>
+        <h5>Deliver to {{location.title}}</h5>
         <ion-text color="medium">{{location.address}}</ion-text>
       </ion-label>
     </ion-item>
+
+    <ion-item lines="none" *ngIf="location?.lat && (!location?.id || location?.id === '')">
+      <ion-icon slot="start" name="location-outline"></ion-icon>
+      <ion-label>
+        <h5>You are in a new location!</h5>
+        <ion-text color="medium">{{location.address}}</ion-text>
+      </ion-label>
+    </ion-item>
+
+    <ion-button
+      *ngIf="location.lat && (!location?.id || location?.id === '')"
+      expand="block" color="success"
+      (click)="addAddress(location)">
+      ADD ADDRESS TO PROCEED
+    </ion-button>
+
     <ion-row *ngIf="location?.lat && location?.id && location?.id != ''">
       <ion-col size="6" class="ion-no-padding" (click)="scrollToBottom()">
         <ion-item lines="none" color="light" class="ion-no-padding">

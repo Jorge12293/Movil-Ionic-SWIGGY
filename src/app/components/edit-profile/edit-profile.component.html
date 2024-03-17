@@ -9,7 +9,9 @@
     <ion-list class="ion-padding-horizontal ion-margin-bottom">
       <ion-item>
         <ion-label position="floating">PHONE NUMBER</ion-label>
-        <ion-input type="tel" minlength="10" maxlength="10" required name="phone" [ngModel]="profile?.phone"
+        <ion-input
+          #phoneInput
+          type="tel" minlength="10" maxlength="10" required name="phone" [ngModel]="profile?.phone"
           #phone="ngModel"></ion-input>
         <ion-icon *ngIf="phone.valid" name="checkmark-outline" slot="end" color="primary"></ion-icon>
       </ion-item>
@@ -20,7 +22,8 @@
       </ion-item>
     </ion-list>
     <div class="ion-padding-horizontal ion-text-center">
-      <ion-button *ngIf="!isSubmitted" [disabled]="!f.valid" expand="block" type="submit" color="primary">UPDATE</ion-button>
+      <ion-button *ngIf="!isSubmitted" [disabled]="!f.valid" expand="block" type="submit"
+        color="primary">UPDATE</ion-button>
       <ion-button *ngIf="isSubmitted" [disabled]="!f.valid" color="primary">
         <ion-spinner name="crescent"></ion-spinner>
       </ion-button>

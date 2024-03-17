@@ -7,20 +7,26 @@ import { Geolocation, GeolocationOptions, Position, PositionOptions } from '@cap
 })
 export class LocationService {
 
+  positionOptions: PositionOptions = {
+    maximumAge: 300,
+    timeout: 10000,
+    enableHighAccuracy: false
+  }
 
   constructor() { }
 
   async getCurrentLocation() {
 
     if (!Capacitor.isPluginAvailable('Geolocation')) {
-      return;
+      return undefined;
     }
-    const options: PositionOptions = {
-      maximumAge: 300,
-      timeout: 10000,
-      enableHighAccuracy: false
+
+    if (Capacitor.isNativePlatform()) {
+      const permission = await Geolocation.requestPermissions();
+      console.log(permission)
     }
-    return await Geolocation.getCurrentPosition(options);
+
+    return await Geolocation.getCurrentPosition(this.positionOptions);
 
     // if (Capacitor.isNative) {
     //   const permission = await Geolocation.requestPermissions();
@@ -43,6 +49,6 @@ export class LocationService {
 
   }
 
-
-
 }
+
+

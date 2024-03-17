@@ -9,6 +9,7 @@ import { Restaurant } from 'src/app/models/restaurant.model';
   providedIn: 'root'
 })
 export class ApiService {
+
   banners = [
     {banner: 'assets/imgs/1.jpg'},
     {banner: 'assets/imgs/2.jpg'},
@@ -28,7 +29,9 @@ export class ApiService {
       rating: 5,
       delivery_time: 25,
       distance: 2.5,
-      price: 100
+      price: 100,
+      latitude: 28.649944693035188,
+      longitude: 77.23961776224988
     },
     {
       uid: '12wefdefsdss',
@@ -72,7 +75,9 @@ export class ApiService {
       ],
       rating: 5,
       delivery_time: 25,
-      price: 100
+      price: 100,
+      latitude: 28.649944693035188,
+      longitude: 77.23961776224988
     },
     {
       uid: '12wefdefsdss',
@@ -116,7 +121,9 @@ export class ApiService {
       rating: 5,
       delivery_time: 25,
       distance: 2.5,
-      price: 100
+      price: 100,
+      latitude: 28.649944693035188,
+      longitude: 77.23961776224988
     },
     {
       uid: '12wefdefsdss',
@@ -182,7 +189,7 @@ export class ApiService {
       uid: "12wefdefsdss",
       variation: false,
       veg: true,
-      quantity:0,
+      quantity:0
   },
     {
         category_id: "e00",
@@ -196,7 +203,7 @@ export class ApiService {
         uid: "12wefdss",
         variation: false,
         veg: false,
-        quantity:0,
+        quantity:0
     },
     {
         category_id: "e0",
@@ -210,7 +217,7 @@ export class ApiService {
         uid: "12wefdss",
         variation: false,
         veg: true,
-        quantity:0,
+        quantity:0
     },
     {
         category_id: "e00",
@@ -224,7 +231,7 @@ export class ApiService {
         uid: "12wefdss",
         variation: false,
         veg: false,
-        quantity:0,
+        quantity:0
     },
   ];
 
@@ -238,7 +245,17 @@ export class ApiService {
       lng: 91.74049769999999,
       title: "Fancy",
       user_id: "1"},
-    {address: "Kanuat palace, India", house: "Ground Floor", id: "8Kox63KlggTvV7ebRKar", landmark: "Bazar", lat: 26.1830738, lng: 91.74049769999999, title: "Work", user_id: "1"}
+    {address: "Kanuat palace, India", house: "Ground Floor", id: "8Kox63KlggTvV7ebRKar", landmark: "Bazar", lat: 26.1830738, lng: 91.74049769999999, title: "Work", user_id: "1"},
+    {
+      address: "Delhi, India",
+      house: "2nd Floor",
+      id: "7Kox63KlggTvV7ebRDelhi",
+      landmark: "Delhi",
+      lat: 28.649944693035188,
+      lng: 77.23961776224988,
+      title: "Delhi",
+      user_id: "1"
+    }
   ];
 
   orders: Order[] = [
@@ -294,7 +311,6 @@ export class ApiService {
       user_id: "1"
     },
   ];
-
 
 
   constructor() { }
